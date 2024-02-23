@@ -18,12 +18,23 @@ with sync_playwright() as p:
         page.goto(video_url)
         title = page.query_selector("h1").inner_text()
         print(title)
-        informations = [ info_div.inner_text() for info_div in page.query_selector_all("#information div")]
-        criterion = [ crit_div.inner_text() for crit_div in page.query_selector_all(".criterion:not(.gray-font)")]
+        picture = page.query_selector("#place-photos img").get_attribute('src')
+        address_div = page.query_selector("#information > div:nth-child(3) a")
+        address = ""
+        gmaps_url = address_div.get_attribute('href')
+        if address_div:
+            address = address_div.inner_text()
+        informations = {}
+        for info_div in page.query_selector_all("#information>div:first-child .col-10>div"):
+            informations[f"{info_div.query_selector('div:first-child').inner_text()}"] = [ hour.inner_text() for hour in info_div.query_selector_all("div")[1:]]
+        criterion = [ crit_div.inner_text().split("\n")[0].strip() for crit_div in page.query_selector_all(".criterion:not(.gray-font)")]
         data.append({
+            'picture': "https://laptopfriendly.co" + picture,
             'title': title,
             'informations': informations,
-            'criterion': criterion
+            'address': address,
+            'criterion': criterion,
+            'gmaps_url': gmaps_url
         })
     page.context.close() 
     browser.close()
