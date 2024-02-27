@@ -6,6 +6,8 @@ from playwright.sync_api import sync_playwright
 url = "https://laptopfriendly.co/tokyo"
 data = []
 
+criterion_list = ["Stable Wi-Fi", "Power sockets", "Long stays", "Work-friendly tables", "Quiet", "Coffee", "Food", "Video/audio calls", "People working"]
+
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
@@ -28,6 +30,7 @@ with sync_playwright() as p:
         for info_div in page.query_selector_all("#information>div:first-child .col-10>div"):
             informations[f"{info_div.query_selector('div:first-child').inner_text()}"] = [ hour.inner_text() for hour in info_div.query_selector_all("div")[1:]]
         criterion = [ crit_div.inner_text().split("\n")[0].strip() for crit_div in page.query_selector_all(".criterion:not(.gray-font)")]
+        criterion = [ criteria for criteria in criterion if criteria in criterion_list]
         data.append({
             'picture': "https://laptopfriendly.co" + picture,
             'title': title,
