@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 url = "https://laptopfriendly.co/tokyo"
 data = []
 
-criterion_list = ["Stable Wi-Fi", "Power sockets", "Long stays", "Work-friendly tables", "Quiet", "Coffee", "Food", "Video/audio calls", "People working"]
+criterion_list = ["Stable Wi-Fi", "Power sockets", "Quiet", "Coffee", "Food"]
 
 with sync_playwright() as p:
     browser = p.chromium.launch()
