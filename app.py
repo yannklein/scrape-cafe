@@ -26,15 +26,15 @@ with sync_playwright() as p:
         gmaps_url = address_div.get_attribute('href')
         if address_div:
             address = address_div.inner_text()
-        informations = {}
+        hours = {}
         for info_div in page.query_selector_all("#information>div:first-child .col-10>div"):
-            informations[f"{info_div.query_selector('div:first-child').inner_text()}"] = [ hour.inner_text() for hour in info_div.query_selector_all("div")[1:]]
+            hours[f"{info_div.query_selector('div:first-child').inner_text()}"] = [ hour.inner_text() for hour in info_div.query_selector_all("div")[1:]]
         criteria = [ crit_div.inner_text().split("\n")[0].strip() for crit_div in page.query_selector_all(".criterion:not(.gray-font)")]
         criteria = [ criterion for criterion in criteria if criterion in criteria_list]
         data.append({
             'picture': "https://laptopfriendly.co" + picture,
             'title': title,
-            'informations': informations,
+            'hours': hours,
             'address': address,
             'criteria': criteria
         })
