@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 url = "https://laptopfriendly.co/tokyo"
 data = []
 
-criterion_list = ["Stable Wi-Fi", "Power sockets", "Quiet", "Coffee", "Food"]
+criteria_list = ["Stable Wi-Fi", "Power sockets", "Quiet", "Coffee", "Food"]
 
 with sync_playwright() as p:
     browser = p.chromium.launch()
@@ -29,15 +29,14 @@ with sync_playwright() as p:
         informations = {}
         for info_div in page.query_selector_all("#information>div:first-child .col-10>div"):
             informations[f"{info_div.query_selector('div:first-child').inner_text()}"] = [ hour.inner_text() for hour in info_div.query_selector_all("div")[1:]]
-        criterion = [ crit_div.inner_text().split("\n")[0].strip() for crit_div in page.query_selector_all(".criterion:not(.gray-font)")]
-        criterion = [ criteria for criteria in criterion if criteria in criterion_list]
+        criteria = [ crit_div.inner_text().split("\n")[0].strip() for crit_div in page.query_selector_all(".criterion:not(.gray-font)")]
+        criteria = [ criterion for criterion in criteria if criterion in criteria_list]
         data.append({
             'picture': "https://laptopfriendly.co" + picture,
             'title': title,
             'informations': informations,
             'address': address,
-            'criterion': criterion,
-            'gmaps_url': gmaps_url
+            'criteria': criteria
         })
     page.context.close() 
     browser.close()
@@ -45,34 +44,3 @@ with sync_playwright() as p:
     with open('./cafe.json', 'w') as f:
         f.write(json_object)
         
-
-        
-# html_doc = requests.get(url).text
-
-# soup = BeautifulSoup(html_doc, 'html.parser')
-
-# places = soup.find_all('a', class_='place')
-# data = []
-# for place in places:
-#     place_url = "https://laptopfriendly.co" + place.attrs['href']
-#     print(place_url)
-#     html_doc = requests.get(place_url).text
-#     soup = BeautifulSoup(html_doc, 'html.parser')
-#     title = soup.find("h1").text
-#     info_divs = soup.find(id="information").find_all("div")
-#     informations = [ info.text for info in info_divs]
-#     criterion = []
-#     def class_selection(c):
-#         return 'criterion' in c and 'gray-font' not in c
-#     crit_divs = soup.find(class_=class_selection)
-#     for crit_div in crit_divs:
-#         criterion.append(crit_div.text)
-#     data.append({
-#         'title': title,
-#         'informations': informations,
-#         'criterion': criterion
-#     })
-    
-# json_object = json.dumps(data, indent=4)
-# with open('./cafe.json', 'w') as f:
-#     f.write(json_object)
